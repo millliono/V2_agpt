@@ -21,7 +21,7 @@ String hostUrl = "http://10.40.10.5:3000/api/graphql";
 // Pin
 uint8_t s0Pin = IO4;
 
-EthernetManager eth(mac, ip, gateway, subnet);
+EthManager eth(mac, ip, gateway, subnet);
 ApiClient db(hostUrl);
 DHT111 s0(s0Pin, "0013a20040050000");
 
@@ -30,7 +30,7 @@ Task tsk0(3000, testSensor);
 
 void setup()
 {
-  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); // disable brownout detector
+  // WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); // disable brownout detector
 
   Serial.begin(115200);
   while (!Serial && millis() < 5000)
