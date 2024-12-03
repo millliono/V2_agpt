@@ -4,9 +4,9 @@
 // #include <soc/soc.h>
 // #include "soc/rtc_cntl_reg.h"
 
-#include "../lib/EthernetManager.cpp"
-#include "../lib/ApiClient.cpp"
-#include "../lib/DHT11.cpp"
+#include "EthManager.h"
+#include "ApiClient.h"
+#include "DHT11.h"
 
 // Static IP configuration
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
