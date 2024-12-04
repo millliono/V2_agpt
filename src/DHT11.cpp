@@ -41,8 +41,8 @@ float DHT111::getHumidity()
 
 void DHT111::debug()
 {
-    Serial.println("Humidity: " + String(getHumidity()));
-    Serial.println("Temperature: " + String(getTemperature()));
+    Serial.println("(DHT11)-Humidity: " + String(getHumidity()));
+    Serial.println("(DHT11)-Temperature: " + String(getTemperature()));
 }
 
 JsonDocument DHT111::createJsonDoc(int sensorId, float value)

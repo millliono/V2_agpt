@@ -39,8 +39,8 @@ float AHT10::getHumidity()
 
 void AHT10::debug()
 {
-    Serial.println("Humidity: " + String(getHumidity()));
-    Serial.println("Temperature: " + String(getTemperature()));
+    Serial.println("(ATH10)-Humidity: " + String(getHumidity()));
+    Serial.println("(ATH10)-Temperature: " + String(getTemperature()));
 }
 
 JsonDocument AHT10::createJsonDoc(int sensorId, float value)
