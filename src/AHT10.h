@@ -1,17 +1,16 @@
-#ifndef DHT111_H
-#define DHT111_H
+#ifndef AHT10_H
+#define AHT10_H
 
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
-#include <DHT_U.h>
+#include <Adafruit_AHTX0.h>
 #include <ArduinoJson.h>
+#include <Wire.h>
 
 #include "Common.h"
 
-class DHT111
+class AHT10
 {
 public:
-    DHT111(uint8_t DHTPIN, String sensorAddress);
+    AHT10(String sensorAddress);
 
     void initialize();
     float getTemperature();
@@ -20,9 +19,8 @@ public:
     JsonDocument createJsonDoc(int sensorId, float value);
 
 private:
-    uint8_t pin;
-    DHT_Unified dht;
+    Adafruit_AHTX0 aht;
     String sensorAddress;
 };
 
-#endif // DHT111_H
+#endif // AHT10_H

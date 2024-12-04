@@ -26,7 +26,7 @@ float DHT111::getTemperature()
 float DHT111::getHumidity()
 {
     sensors_event_t event;
-    dht.temperature().getEvent(&event);
+    dht.humidity().getEvent(&event);
 
     if (isnan(event.relative_humidity))
     {
@@ -47,11 +47,5 @@ void DHT111::debug()
 
 JsonDocument DHT111::createJsonDoc(int sensorId, float value)
 {
-    JsonDocument doc;
-    doc["query"] = "mutation CreateEntry($entryInput: EntryCreate!) { createEntry(entryInput: $entryInput) { _id address sensor value }}";
-    JsonObject variables_entryInput = doc["variables"]["entryInput"].to<JsonObject>();
-    variables_entryInput["address"] = sensorAddress;
-    variables_entryInput["sensor"] = sensorId;
-    variables_entryInput["value"] = value;
-    return doc;
+    return Common::createJsonDoc(sensorAddress, sensorId, value);
 }

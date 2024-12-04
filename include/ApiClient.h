@@ -10,7 +10,7 @@ class ApiClient
 public:
     ApiClient(const String hostUrl);
 
-    void sendJson(JsonDocument doc);
+    void postJson(JsonDocument doc);
 
 private:
     String host;

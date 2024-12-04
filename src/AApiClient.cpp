@@ -2,7 +2,7 @@
 
 ApiClient::ApiClient(const String hostUrl) : host(hostUrl) {}
 
-void ApiClient::sendJson(JsonDocument doc)
+void ApiClient::postJson(JsonDocument doc)
 {
     if (!http.begin(host))
     {

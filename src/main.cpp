@@ -1,32 +1,46 @@
 #include <Arduino.h>
 #include <HTTPClient.h>
 #include <SoftTimer.h>
-// #include <soc/soc.h>
-// #include "soc/rtc_cntl_reg.h"
 
 #include "EthManager.h"
 #include "ApiClient.h"
 #include "DHT11.h"
+#include "AHT10.h"
 
 // Static IP configuration
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-IPAddress ip(10, 40, 10, 6);
-IPAddress gateway(10, 40, 10, 255);
+// IPAddress ip(10, 40, 10, 6);
+IPAddress ip(192, 168, 1, 9);
+
+// IPAddress gateway(10, 40, 10, 255);
+IPAddress gateway(192, 168, 1, 1);
+
 IPAddress subnet(255, 255, 255, 0);
 HTTPClient http;
 
-// API URL
-String hostUrl = "http://10.40.10.5:3000/api/graphql";
+// String hostUrl = "http://10.40.10.5:3000/api/graphql";
+String hostUrl = "http://192.168.1.7:3000/graphql";
 
-// Pin
-uint8_t s0Pin = IO4;
+// Choose sensor type
+// #define SENSOR_TYPE_DHT11
+#define SENSOR_TYPE_AHT10
+
+#ifdef SENSOR_TYPE_DHT11
+uint8_t pin = IO4;
+DHT111 sensor(pin, "0013a20040050001");
+#elif defined(SENSOR_TYPE_AHT10)
+uint8_t i2cSDA = IO14; 
+uint8_t i2cSCL = IO15;
+AHT10 sensor("0013a20040050002");
+#endif
 
 EthManager eth(mac, ip, gateway, subnet);
-ApiClient db(hostUrl);
-DHT111 s0(s0Pin, "0013a20040050000");
+ApiClient api(hostUrl);
 
 void testSensor(Task *me);
+void postDb(Task *me);
 Task tsk0(3000, testSensor);
+Task tsk1(60000, postDb);
 
 void setup()
 {
@@ -37,20 +51,30 @@ void setup()
     ;
   delay(200);
 
-  pinMode(s0Pin, INPUT_PULLUP);
+// Initialize pins
+#ifdef SENSOR_TYPE_DHT11
+  pinMode(pin, INPUT);
+#endif
 
-  eth.initialize();
-  s0.initialize();
+#ifdef SENSOR_TYPE_AHT10
+  Wire.begin(i2cSDA, i2cSCL);
+#endif
+
+  // eth.initialize();
+  sensor.initialize();
 
   SoftTimer.add(&tsk0);
+  // SoftTimer.add(&tsk1);
 }
 
-void testSensor(Task* me)
+void testSensor(Task *me)
 {
   Serial.println("Reading sensor data...");
-  float temperature = s0.getTemperature();
-  float humidity = s0.getHumidity();
+  sensor.debug();
+}
 
-  Serial.println("Temperature: " + String(temperature) + " °C");
-  Serial.println("Humidity: " + String(humidity) + " %");
+void postDb(Task *me)
+{
+  api.postJson(sensor.createJsonDoc(4, sensor.getTemperature()));
+  api.postJson(sensor.createJsonDoc(5, sensor.getHumidity()));
 }
